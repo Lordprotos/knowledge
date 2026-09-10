@@ -1,0 +1,1 @@
+{% extends 'base.html.twig' %}{% block body %}<main><h1>Mes certifications</h1>{% if certifications is empty %}<p>Aucune certification obtenue.</p>{% endif %}{% for certification in certifications %}<p>Certification Knowledge Learning — {{ certification.theme.name }}</p>{% endfor %}</main>{% endblock %}
