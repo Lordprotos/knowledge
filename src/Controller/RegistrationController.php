@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class RegistrationController extends AbstractController
 {
+    public function __construct(private string $mailerFrom) {}
+
     #[Route('/inscription', name: 'app_register')]
     public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, MailerInterface $mailer): Response
     {
@@ -26,7 +28,7 @@ final class RegistrationController extends AbstractController
             $user = new User($email, ''); $user->setPassword($hasher->hashPassword($user, $plainPassword));
             $user->setVerificationToken(bin2hex(random_bytes(32))); $em->persist($user); $em->flush();
             $url = $this->generateUrl('app_verify_email', ['token' => $user->getVerificationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
-            $mailer->send((new Email())->from('no-reply@knowledge-learning.local')->to($email)->subject('Activez votre compte Knowledge Learning')->text("Bienvenue ! Activez votre compte : $url"));
+            $mailer->send((new Email())->from($this->mailerFrom)->to($email)->subject('Activez votre compte Knowledge Learning')->text("Bienvenue ! Activez votre compte : $url"));
             $this->addFlash('success', 'Compte créé. Consultez votre e-mail pour l’activer.'); return $this->redirectToRoute('app_login');
         }
         return $this->render('registration/register.html.twig');

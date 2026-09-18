@@ -19,8 +19,15 @@ class Lesson
     public function __construct(Curriculum $curriculum, string $title, int $position, int $priceCents) { $this->curriculum=$curriculum; $this->title=$title; $this->position=$position; $this->priceCents=$priceCents; }
     public function getId(): ?int { return $this->id; }
     public function getCurriculum(): Curriculum { return $this->curriculum; }
+    public function setCurriculum(Curriculum $curriculum): void { $this->curriculum = $curriculum; }
     public function getTitle(): string { return $this->title; }
+    public function setTitle(string $title): void { $this->title = $title; }
     public function getPosition(): int { return $this->position; }
+    public function setPosition(int $position): void { $this->position = $position; }
     public function getPriceCents(): int { return $this->priceCents; }
+    public function setPriceCents(int $priceCents): void { $this->priceCents = $priceCents; }
     public function getContent(): string { return $this->content; }
+    public function setContent(string $content): void { $this->content = $content; }
+    public function getVideoUrl(): ?string { return $this->videoUrl; }
+    public function setVideoUrl(?string $videoUrl): void { $this->videoUrl = $videoUrl ?: null; }
 }

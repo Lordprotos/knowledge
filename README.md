@@ -1,21 +1,43 @@
 # Knowledge Learning
 
-Prototype Symfony 7 d’une plateforme de formation. Le projet utilise une architecture MVC : les contrôleurs HTTP appellent des services métier, Doctrine fournit les entités et les dépôts, et Twig rend les vues.
+Plateforme e-learning réalisée avec Symfony 7, Doctrine, MariaDB et Twig.
 
-## Démarrage
+## Fonctions
 
-MariaDB doit être lancé sur le port 3307. La connexion locale est dans `.env.local` (ce fichier ne doit jamais être envoyé sur Git). Exécuter `php bin/console doctrine:migrations:migrate` puis `php bin/console app:seed-catalog`.
+- inscription avec activation par e-mail ;
+- catalogue organisé par thèmes, parcours et leçons ;
+- paiement par Stripe Checkout en mode test ;
+- accès aux contenus achetés, suivi de progression et certifications ;
+- administration des thèmes, parcours et leçons ;
+- logo, favicon et lecteur vidéo si une URL vidéo est renseignée.
 
-Les routes principales sont `/`, `/inscription`, `/connexion` et `/certifications`. Les paiements sont une simulation sandbox : aucun moyen de paiement réel n’est utilisé.
+## Démarrage local
 
-## Modèle physique
+Configurer `DATABASE_URL`, `STRIPE_SECRET_KEY`, `MAILER_DSN` et `MAILER_FROM` dans `.env.local`, puis exécuter :
 
-`users` gère les comptes, rôles et activation. `themes`, `curricula` et `lessons` forment le catalogue. `purchases` porte les droits d’accès. `lesson_progress` mémorise les validations et `certifications` les certifications par thème. Les tables métier possèdent `created_at`, `updated_at`, `created_by` et `updated_by`; les relations sont protégées par des clés étrangères InnoDB.
+```bash
+php bin/console doctrine:migrations:migrate
+php bin/console app:seed-catalog
+php bin/console app:create-admin admin@example.test "MotDePasse123"
+php -S 127.0.0.1:8000 -t public
+```
 
-## Sécurité et tests
+Le site est disponible à `http://127.0.0.1:8000`.
 
-Les mots de passe sont hachés avec le hasher Symfony. L’inscription vérifie longueur, majuscule, minuscule et chiffre; les formulaires de compte utilisent des jetons CSRF. Les tests se lancent avec `php bin/phpunit`.
+## Comptes de démonstration
 
-Un administrateur se crée sans identifiants codés en dur avec `php bin/console app:create-admin admin@example.test 'MotDePasse123'`. Il peut ensuite accéder à `/admin`.
+Créer un client de test vérifié avec :
 
-Les livrables de soutenance sont disponibles dans [`docs/`](docs/) : [modèle physique](docs/MPD.md), [guide de déploiement](docs/DEPLOIEMENT.md) et [support de présentation](docs/PRESENTATION.md).
+```bash
+php bin/console app:create-test-user test@example.test "TestPassword123"
+```
+
+## Paiement, e-mail et tests
+
+Stripe utilise une clé `sk_test_…`. Brevo utilise une clé SMTP et une adresse expéditrice validée. Ne jamais versionner ces secrets.
+
+```bash
+php bin/phpunit
+```
+
+Les documents du projet sont dans [`docs/`](docs/) : [MPD](docs/MPD.md), [déploiement](docs/DEPLOIEMENT.md) et [présentation](docs/PRESENTATION.md).

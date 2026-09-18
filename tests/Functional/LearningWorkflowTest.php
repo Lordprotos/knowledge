@@ -8,13 +8,13 @@ use App\Entity\Lesson;
 use App\Entity\LessonProgress;
 use App\Entity\Theme;
 use App\Entity\User;
+use App\Service\LearningService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-/** Covers sandbox purchases, protected content and automatic completion rules. */
 final class LearningWorkflowTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
@@ -34,21 +34,19 @@ final class LearningWorkflowTest extends WebTestCase
         $this->user = $this->entityManager->find(User::class, $userId); $this->curriculum = $this->entityManager->find(Curriculum::class, $curriculumId); $this->lesson = $this->entityManager->find(Lesson::class, $lessonId);
     }
 
-    public function testClientCanBuyCurriculumAndAccessLesson(): void
+    public function testClientWithPurchasedCurriculumCanAccessLesson(): void
     {
-        $this->client->loginUser($this->user);
-        $this->client->request('GET', '/cursus/'.$this->curriculum->getId());
-        $this->client->submitForm('Acheter le cursus'); self::assertResponseRedirects('/cursus/'.$this->curriculum->getId());
-        $this->client->request('GET', '/lecon/'.$this->lesson->getId()); self::assertResponseIsSuccessful(); self::assertSelectorTextContains('h1', 'Leçon test');
+        self::getContainer()->get(LearningService::class)->buyCurriculum($this->user, $this->curriculum);
+        $this->client->loginUser($this->user); $this->client->request('GET', '/lecon/'.$this->lesson->getId());
+        self::assertResponseIsSuccessful(); self::assertSelectorTextContains('h1', 'Leçon test');
     }
 
-    public function testClientCanBuyLessonValidateCurriculumAndObtainCertification(): void
+    public function testClientCanValidateLessonAndObtainCertification(): void
     {
-        $this->client->loginUser($this->user);
-        $this->client->request('GET', '/cursus/'.$this->curriculum->getId()); $this->client->submit($this->client->getCrawler()->filter('button.button-secondary')->form()); self::assertResponseRedirects('/lecon/'.$this->lesson->getId());
-        $this->client->followRedirect(); $this->client->submitForm('Valider cette leçon'); self::assertResponseRedirects('/lecon/'.$this->lesson->getId());
-        self::assertNotNull($this->entityManager->getRepository(LessonProgress::class)->findOneBy(['user'=>$this->user, 'lesson'=>$this->lesson]));
-        self::assertNotNull($this->entityManager->getRepository(CurriculumProgress::class)->findOneBy(['user'=>$this->user, 'curriculum'=>$this->curriculum]));
-        self::assertCount(1, $this->entityManager->getRepository(Certification::class)->findBy(['user'=>$this->user]));
+        self::getContainer()->get(LearningService::class)->buyLesson($this->user, $this->lesson);
+        $this->client->loginUser($this->user); $this->client->request('GET', '/lecon/'.$this->lesson->getId()); $this->client->submitForm('Valider cette leçon'); self::assertResponseRedirects('/lecon/'.$this->lesson->getId());
+        self::assertNotNull($this->entityManager->getRepository(LessonProgress::class)->findOneBy(['user' => $this->user, 'lesson' => $this->lesson]));
+        self::assertNotNull($this->entityManager->getRepository(CurriculumProgress::class)->findOneBy(['user' => $this->user, 'curriculum' => $this->curriculum]));
+        self::assertCount(1, $this->entityManager->getRepository(Certification::class)->findBy(['user' => $this->user]));
     }
 }

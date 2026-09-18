@@ -20,5 +20,6 @@ class Theme
     public function __construct(string $name) { $this->name = $name; $this->curricula = new ArrayCollection(); }
     public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }
+    public function setName(string $name): void { $this->name = $name; }
     /** @return Collection<int, Curriculum> */ public function getCurricula(): Collection { return $this->curricula; }
 }

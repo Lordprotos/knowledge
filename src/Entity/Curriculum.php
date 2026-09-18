@@ -19,7 +19,10 @@ class Curriculum
     public function __construct(Theme $theme, string $title, int $priceCents) { $this->theme=$theme; $this->title=$title; $this->priceCents=$priceCents; $this->lessons=new ArrayCollection(); }
     public function getId(): ?int { return $this->id; }
     public function getTheme(): Theme { return $this->theme; }
+    public function setTheme(Theme $theme): void { $this->theme = $theme; }
     public function getTitle(): string { return $this->title; }
+    public function setTitle(string $title): void { $this->title = $title; }
     public function getPriceCents(): int { return $this->priceCents; }
+    public function setPriceCents(int $priceCents): void { $this->priceCents = $priceCents; }
     /** @return Collection<int, Lesson> */ public function getLessons(): Collection { return $this->lessons; }
 }
