@@ -1,0 +1,41 @@
+<section aria-labelledby="purchases-title">
+    <h2 id="purchases-title">Mes formations achetées</h2>
+    <div class="lesson-list">
+        {% for purchase in purchases %}
+            <article>
+                {% if purchase.curriculum %}
+                    <div>
+                        <p class="eyebrow">
+                            Cursus acheté
+                        </p>
+                        <h3>{{ purchase.curriculum.title }}</h3>
+                        <p>
+                            Toutes les leçons de ce cursus sont accessibles.
+                        </p>
+                    </div>
+                    <a
+                        class="button"
+                        href="{{ path('app_curriculum', { id: purchase.curriculum.id }) }}"
+                    >
+                        Accéder au cursus
+                    </a>
+                {% elseif purchase.lesson %}
+                    <div>
+                        <p class="eyebrow">
+                            Leçon achetée
+                        </p>
+                        <h3>{{ purchase.lesson.title }}</h3>
+                    </div>
+                    <a class="button" href="{{ path('app_lesson', { id: purchase.lesson.id }) }}">
+                        Accéder à la leçon
+                    </a>
+                {% endif %}
+            </article>
+        {% else %}
+            <p>
+                Vous n'avez pas encore acheté de formation. <a href="{{ path('app_catalog') }}">Découvrir
+                    le catalogue</a>
+            </p>
+        {% endfor %}
+    </div>
+</section>

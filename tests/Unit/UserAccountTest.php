@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Tests\Unit;
 
 use App\Entity\User;
@@ -14,14 +15,18 @@ final class UserAccountTest extends TestCase
         self::assertSame(['ROLE_CLIENT'], $user->getRoles());
         self::assertFalse($user->isVerified());
     }
+
     public function testUnverifiedAccountCannotAuthenticate(): void
     {
         $this->expectException(CustomUserMessageAccountStatusException::class);
         (new VerifiedUserChecker())->checkPostAuth(new User('client@example.test', 'hash'));
     }
+
     public function testVerifiedAccountCanAuthenticate(): void
     {
-        $user = new User('client@example.test', 'hash'); $user->setVerificationToken('token'); $user->verify();
+        $user = new User('client@example.test', 'hash');
+        $user->setVerificationToken('token');
+        $user->verify();
         (new VerifiedUserChecker())->checkPostAuth($user);
         self::assertTrue($user->isVerified());
     }

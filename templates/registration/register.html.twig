@@ -1,3 +1,26 @@
 {% extends 'base.html.twig' %}
-{% block title %}Inscription | Knowledge Learning{% endblock %}
-{% block body %}<main><h1>Créer un compte</h1>{% for message in app.flashes('error') %}<p>{{ message }}</p>{% endfor %}<form method="post"><input type="hidden" name="_token" value="{{ csrf_token('register') }}"><label>E-mail <input type="email" name="email" required></label><label>Mot de passe <input type="password" name="password" minlength="12" required></label><p>12 caractères minimum, avec majuscule, minuscule et chiffre.</p><button>Créer mon compte</button></form><a href="{{ path('app_login') }}">Déjà inscrit ? Se connecter</a></main>{% endblock %}
+{% block title %}
+    Inscription | Knowledge Learning
+{% endblock %}
+{% block body %}
+    <main>
+        <h1>Créer un compte</h1>
+        {% for message in app.flashes('error') %}
+            <p>
+                {{ message }}
+            </p>
+        {% endfor %}
+        <form method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('register') }}" />
+            <label>E-mail<input type="email" name="email" required /></label>
+            <label>
+                Mot de passe<input type="password" name="password" minlength="12" required />
+            </label>
+            <p>
+                12 caractères minimum, avec majuscule, minuscule et chiffre.
+            </p>
+            <button>Créer mon compte</button>
+        </form>
+        <a href="{{ path('app_login') }}">Déjà inscrit ? Se connecter</a>
+    </main>
+{% endblock %}

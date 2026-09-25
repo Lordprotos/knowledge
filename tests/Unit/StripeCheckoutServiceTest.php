@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Tests\Unit;
 
 use App\Entity\Curriculum;
@@ -14,6 +15,9 @@ final class StripeCheckoutServiceTest extends TestCase
     {
         $service = new StripeCheckoutService('', $this->createMock(UrlGeneratorInterface::class));
         $this->expectException(\LogicException::class);
-        $service->create(new User('client@example.test', 'hash'), new Curriculum(new Theme('Art'), 'Cours', 1500));
+        $service->create(
+            new User('client@example.test', 'hash'),
+            new Curriculum(new Theme('Art'), 'Cours', 1500),
+        );
     }
 }

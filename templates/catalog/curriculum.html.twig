@@ -1,2 +1,74 @@
 {% extends 'base.html.twig' %}
-{% block body %}<main><a class="back-link" href="{{ path('app_catalog') }}">← Catalogue</a><section class="course-heading"><div><p class="eyebrow">Cursus</p><h1>{{ curriculum.title }}</h1><p>{{ curriculum.lessons|length }} leçons pour développer vos compétences.</p></div><aside><strong>{{ (curriculum.priceCents / 100)|number_format(2, ',', ' ') }} €</strong>{% if app.user %}<form method="post" action="{{ path('app_buy_curriculum', {id: curriculum.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('buy-curriculum-' ~ curriculum.id) }}"><button>Acheter le cursus</button></form>{% else %}<a class="button" href="{{ path('app_login') }}">Se connecter pour acheter</a>{% endif %}</aside></section><h2>Programme</h2><div class="lesson-list">{% for lesson in curriculum.lessons %}<article><div><span class="lesson-number">{{ lesson.position }}</span><h3>{{ lesson.title }}</h3><p>{{ (lesson.priceCents / 100)|number_format(2, ',', ' ') }} €</p></div>{% if app.user %}<form method="post" action="{{ path('app_buy_lesson', {id: lesson.id}) }}"><input type="hidden" name="_token" value="{{ csrf_token('buy-lesson-' ~ lesson.id) }}"><button class="button-secondary">Acheter la leçon</button></form>{% endif %}</article>{% endfor %}</div></main>{% endblock %}
+{% block body %}
+    {# Les formulaires d’achat désactivent Turbo pour naviguer vers Stripe Checkout. #}
+    <main>
+        <a class="back-link" href="{{ path('app_catalog') }}">← Catalogue</a>
+        <section class="course-heading">
+            <div>
+                <p class="eyebrow">
+                    Cursus
+                </p>
+                <h1>{{ curriculum.title }}</h1>
+                <p>
+                    {{ curriculum.lessons|length }} leçons pour développer vos compétences.
+                </p>
+            </div>
+            <aside>
+                <strong>{{ (curriculum.priceCents / 100)|number_format(2, ',', ' ') }} €</strong>
+                {% if owned %}
+                    <p>
+                        Cursus acheté
+                    </p>
+                    <a class="button" href="#programme">Accéder aux leçons</a>
+                {% elseif app.user %}
+                    <form
+                        data-turbo="false"
+                        method="post"
+                        action="{{ path('app_buy_curriculum', { id: curriculum.id }) }}"
+                    >
+                        <input
+                            type="hidden"
+                            name="_token"
+                            value="{{ csrf_token('buy-curriculum-' ~ curriculum.id) }}"
+                        />
+                        <button>Acheter le cursus</button>
+                    </form>
+                {% else %}
+                    <a class="button" href="{{ path('app_login') }}">Se connecter pour acheter</a>
+                {% endif %}
+            </aside>
+        </section>
+        <h2 id="programme">Programme</h2>
+        <div class="lesson-list">
+            {% for lesson in curriculum.lessons %}
+                <article>
+                    <div>
+                        <span class="lesson-number">{{ lesson.position }}</span>
+                        <h3>{{ lesson.title }}</h3>
+                        <p>
+                            {{ (lesson.priceCents / 100)|number_format(2, ',', ' ') }} €
+                        </p>
+                    </div>
+                    {% if accessibleLessons[lesson.id] %}
+                        <a class="button" href="{{ path('app_lesson', { id: lesson.id }) }}">
+                            Accéder à la leçon
+                        </a>
+                    {% elseif app.user %}
+                        <form
+                            data-turbo="false"
+                            method="post"
+                            action="{{ path('app_buy_lesson', { id: lesson.id }) }}"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('buy-lesson-' ~ lesson.id) }}"
+                            />
+                            <button class="button-secondary">Acheter la leçon</button>
+                        </form>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}

@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Knowledge Learning{% endblock %}</title>
-        <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-        {% block stylesheets %}{% endblock %}
-        {% block javascripts %}{% block importmap %}{{ importmap('app') }}{% endblock %}{% endblock %}
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+            {% block title %}
+                Knowledge Learning
+            {% endblock %}
+        </title>
+        <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" />
+        {% block stylesheets %}
+
+        {% endblock %}
+        {% block javascripts %}
+            {% block importmap %}
+                {{ importmap('app') }}
+            {% endblock %}
+        {% endblock %}
     </head>
     <body>
         <header class="site-header">
-            <a class="brand" href="{{ path('app_catalog') }}"><img src="{{ asset('images/logo.jpg') }}" alt="Knowledge Learning"><span>Knowledge</span> Learning</a>
+            <a class="brand" href="{{ path('app_catalog') }}">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Knowledge Learning" />
+                <span>Knowledge</span> Learning
+            </a>
             <nav aria-label="Navigation principale">
                 <a href="{{ path('app_catalog') }}">Catalogue</a>
                 {% if app.user %}
                     <a href="{{ path('app_certifications') }}">Mes certifications</a>
-                    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_admin_dashboard') }}">Backoffice</a>{% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_dashboard') }}">Backoffice</a>
+                    {% endif %}
                     <a href="{{ path('app_logout') }}">Déconnexion</a>
                 {% else %}
                     <a href="{{ path('app_login') }}">Connexion</a>
@@ -23,9 +38,21 @@
                 {% endif %}
             </nav>
         </header>
-        {% for message in app.flashes('success') %}<div class="flash flash-success">{{ message }}</div>{% endfor %}
-        {% for message in app.flashes('error') %}<div class="flash flash-error">{{ message }}</div>{% endfor %}
-        {% block body %}{% endblock %}
-        <footer class="site-footer">© {{ 'now'|date('Y') }} Knowledge Learning</footer>
+        {% for message in app.flashes('success') %}
+            <div class="flash flash-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="flash flash-error">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% block body %}
+
+        {% endblock %}
+        <footer class="site-footer">
+            © {{ 'now'|date('Y') }} Knowledge Learning
+        </footer>
     </body>
 </html>

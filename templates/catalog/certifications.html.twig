@@ -1,1 +1,23 @@
-{% extends 'base.html.twig' %}{% block body %}<main><h1>Mes certifications</h1>{% if certifications is empty %}<p>Aucune certification obtenue.</p>{% endif %}{% for certification in certifications %}<p>Certification Knowledge Learning — {{ certification.theme.name }}</p>{% endfor %}</main>{% endblock %}
+{% extends 'base.html.twig' %}
+{% block body %}
+    {# Les achats ouvrent les contenus ; les certificats dépendent de la progression. #}
+    <main>
+        <h1>Mes certifications</h1>
+        {% include 'catalog/purchases_section.html.twig' %}
+        <section aria-labelledby="certifications-title">
+            <h2 id="certifications-title">Mes certificats obtenus</h2>
+            <p>
+                Validez toutes les leçons d'un thème pour obtenir sa certification.
+            </p>
+            {% for certification in certifications %}
+                <p>
+                    Certification Knowledge Learning — {{ certification.theme.name }}
+                </p>
+            {% else %}
+                <p>
+                    Aucune certification obtenue.
+                </p>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}
